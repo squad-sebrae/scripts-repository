@@ -16,20 +16,6 @@ window.addEventListener("DOMContentLoaded", function () {
     return;
   }
 
-  if (!salesforce.getAttribute("CIDADES_ID")) {
-    console.log(
-      "Falta de atributos: CIDADES_ID - ID do campo CIDADE para alimentar a lista"
-    );
-    return;
-  }
-
-  if (!salesforce.getAttribute("REGIONAL_ID")) {
-    console.log(
-      "Falta de atributos: REGIONAL_ID - ID do campo oculto regional"
-    );
-    return;
-  }
-
   const EXPIRATION_DATE_TIME = salesforce.getAttribute("EXPIRATION_DATE_TIME"); // A data que será indisponibilizado o formulário de inscrição
   const FORM_ID = salesforce.getAttribute("FORM_ID"); // Coloque aqui o ID do FORM
   const FORM_SUBMIT_ID = salesforce.getAttribute("FORM_SUBMIT_ID"); // Coloque aqui o ID do botão
@@ -743,38 +729,42 @@ window.addEventListener("DOMContentLoaded", function () {
     ],
   };
 
-  // Recupera o elemento html das cidades
-  const selectCities = document.getElementById(
-    salesforce.getAttribute("CIDADES_ID")
-  );
-  selectCities.innerHTML += `<option value="">-- Selecione uma cidade --</option>`;
+  if (salesforce.getAttribute("CIDADES_ID")) {
+    // Recupera o elemento html das cidades
+    const selectCities = document.getElementById(
+      salesforce.getAttribute("CIDADES_ID")
+    );
+    selectCities.innerHTML += `<option value="">-- Selecione uma cidade --</option>`;
 
-  for (const key in regionais) {
-    if (Object.hasOwnProperty.call(regionais, key)) {
-      const cidades = regionais[key];
-      cidades.forEach((cidade) => {
-        selectCities.innerHTML += `<option value="${cidade}">${cidade}</option>`;
-      });
-    }
-  }
-
-  // De-para cidades-regionais
-  const regional = document.getElementById(
-    salesforce.getAttribute("REGIONAL_ID")
-  );
-  selectCities.addEventListener("input", () => {
     for (const key in regionais) {
       if (Object.hasOwnProperty.call(regionais, key)) {
         const cidades = regionais[key];
-        const cidade = cidades.filter(
-          (cidade) => selectCities.value == cidade
-        )[0];
-
-        if (cidade) {
-          regional.value = key;
-          break;
-        }
+        cidades.forEach((cidade) => {
+          selectCities.innerHTML += `<option value="${cidade}">${cidade}</option>`;
+        });
       }
     }
-  });
+
+    if (salesforce.getAttribute("REGIONAL_ID")) {
+      // De-para cidades-regionais
+      const regional = document.getElementById(
+        salesforce.getAttribute("REGIONAL_ID")
+      );
+      selectCities.addEventListener("input", () => {
+        for (const key in regionais) {
+          if (Object.hasOwnProperty.call(regionais, key)) {
+            const cidades = regionais[key];
+            const cidade = cidades.filter(
+              (cidade) => selectCities.value == cidade
+            )[0];
+
+            if (cidade) {
+              regional.value = key;
+              break;
+            }
+          }
+        }
+      });
+    }
+  }
 });
