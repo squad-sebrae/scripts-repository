@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Calendário Laravel</title>
+    <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js"></script> -->
+    <link rel="stylesheet" href="./modules/fullcalendar.min.css" />
+    <link rel="stylesheet" href="./modules/jquery-ui.css">
+    <script src="./modules/jquery.min.js"></script>
+    <script src="./modules/jquery-ui.min.js"></script>
+    <script src="./modules/moment.min.js"></script>
+    <script src="./modules/fullcalendar.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+            background: #f0f0f0;
+        }
+        #container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+        #item-list {
+            width: 200px;
+            height: 500px;
+            border: 1px solid #e0e0f0;
+            border-radius: 4px;
+            overflow-y: scroll;
+            padding: 10px;
+            margin-right: 20px;
+        }
+        #calendar {
+            width: 60%;
+            background-color: #fff;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .item {
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            cursor: move;
+            background: #f9f9f9;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .item:hover {
+            background: #ececec;
+        }
+        .hidden-item {
+            display: none;
+        }
+        .fc-toolbar {
+            margin-bottom: 30px;
+            background-color: #1976d2;
+            color: #fff;
+            border-radius: 4px;
+            padding: 10px;
+        }
+        .fc-toolbar button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 10px 20px;
+            border: none;
+            background-color: transparent;
+            color: #fff;
+            font-size: 14px;
+            cursor: pointer;
+            /* transition: background-color 0.3s ease; */
+        }
+
+        .fc-toolbar button.fc-state-default {
+            color: #000;
+        } 
+
+        /* Botão Ativo */
+        .fc-toolbar button.fc-state-active {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Botão Hoje */
+        .fc-toolbar button.fc-today-button {
+            background-color: #000;
+            color: #fff;
+        }
+
+        /* Botão dia mês anterior */
+        .fc-toolbar .fc-button-group button.fc-prev-button {
+            color: #000;
+        }
+
+        /* Botão próximo dia */
+        .fc-toolbar .fc-button-group button.fc-next-button {
+            color: #000;
+        }
+
+        .fc-toolbar button:hover {
+            background-color: #1565c0;
+            color: #fff;
+        }
+        .fc-toolbar button.fc-button-primary {
+            background-color: #fff;
+            color: #1976d2;
+            font-weight: 500;
+        }
+        .fc-toolbar button.fc-button-primary:hover {
+            background-color: #e3f2fd;
+            color: #1976d2;
+        }
+        .fc-toolbar .fc-center h2 {
+            margin: 0;
+            padding: 10px 0;
+            font-size: 18px;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+        .fc-day-header {
+            background-color: #f5f5f5;
+            border: none;
+            color: #666;
+            font-weight: 500;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        .fc-day-number {
+            color: #333;
+        }
+        .fc-day-grid-event {
+            background-color: #1976d2;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 12px;
+            padding: 2px 4px;
+            line-height: 1.4;
+        }
+        .fc-day-grid-event:hover {
+            background-color: #1565c0;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="calendar"></div>
+        <div id="item-list">
+            <div class="item" data-name="Item 1">Item 1</div>
+            <div class="item" data-name="Item 2">Item 2</div>
+            <div class="item" data-name="Item 3">Item 3</div>
+            <div class="item" data-name="Item 4">Item 4</div>
+            <div class="item" data-name="Item 5">Item 5</div>
+            <div class="item" data-name="Item 6">Item 6</div>
+        </div>
+    </div>
+    <script>
+        $(document).ready(function() {
+            // Carregar as datas salvas do localStorage
+            var savedDates = JSON.parse(localStorage.getItem('savedDates')) || [];
+
+            // Variável para ativar/desativar a atualização da lista
+            var enableListUpdate = true;
+
+            // Variável dos botões a esquerda
+            var enableHeaderLeftButtons = true;
+
+            // Variável dos botões a direita
+            var enableHeaderRightButtons = true;
+
+            // Definir as configurações de localização em português
+            var localeOptions = {
+                buttonText: {
+                    today: 'Hoje',
+                    month: 'Mês',
+                    week: 'Semana',
+                    day: 'Dia'
+                },
+                monthNames: [
+                    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+                    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+                ],
+                monthNamesShort: [
+                    'Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun',
+                    'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'
+                ],
+                dayNames: [
+                    'Domingo', 'Segunda', 'Terça', 'Quarta',
+                    'Quinta', 'Sexta', 'Sábado'
+                ],
+                dayNamesShort: [
+                    'Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'
+                ],
+                allDayText: 'Dia inteiro',
+                eventLimitText: 'mais',
+                noEventsMessage: 'Não há eventos para mostrar'
+            };
+
+             // Inicializar o calendário
+            var calendar = $('#calendar').fullCalendar({
+                locale: 'pt-br',
+                ...localeOptions,
+                header: {
+                    left: enableHeaderLeftButtons ? 'prev,next today' : undefined,
+                    center: 'title',
+                    right: enableHeaderRightButtons ? 'month,agendaWeek,agendaDay' : undefined
+                },
+                editable: true,
+                droppable: true,
+                // Adicionando itens já cadastrados - LocalStorage
+                events: savedDates.map(function(savedDate) {
+                    return {
+                        title: savedDate.item,
+                        start: savedDate.date,
+                        allDay: true
+                    };
+                }),
+                // Evento de DROP da lista para o calendário
+                drop: function(date, jsEvent, ui) {
+                    var itemName = ui.helper.data('name');
+                    var event = {
+                        title: itemName,
+                        start: date.format(),
+                        allDay: true
+                    };
+                    calendar.fullCalendar('renderEvent', event, true);
+
+                    savedDates.push({
+                        date: date.format(),
+                        item: itemName
+                    });
+
+                    localStorage.setItem('savedDates', JSON.stringify(savedDates));
+
+                    // Atualizar a lista
+                    if (enableListUpdate) {
+                        updateItemList();
+                    }
+
+                    console.table(savedDates);
+                },
+                // Evento drop de uma data para outra
+                eventDrop: function(event, delta, revertFunc) {
+                    // Função chamada quando um evento é arrastado para outra data
+                    var newDate = event.start.format();
+
+                     // Atualizar a data correspondente no array savedDates
+                    var eventIndex = savedDates.findIndex(function(item) {
+                        return item.item === event.title;
+                    });
+                    if (eventIndex !== -1) {
+                        savedDates[eventIndex].date = newDate;
+                    }
+
+                    localStorage.setItem('savedDates', JSON.stringify(savedDates));
+
+                    // Atualizar a lista
+                    if (enableListUpdate) {
+                        updateItemList();
+                    }
+
+                    console.table(savedDates);
+                },
+                // Evento click no item colocado no calendário
+                eventClick: function(event) {
+                    // Remover o evento do calendário
+                    calendar.fullCalendar('removeEvents', event._id);
+
+                     // Remover a data correspondente do array savedDates
+                    var eventIndex = savedDates.findIndex(function(item) {
+                        return item.item === event.title;
+                    });
+
+                    if (eventIndex !== -1) 
+                        savedDates.splice(eventIndex, 1);
+
+                    localStorage.setItem('savedDates', JSON.stringify(savedDates));
+
+                    // Atualizar a lista
+                    if (enableListUpdate) 
+                        updateItemList();
+
+                    console.table(savedDates);
+                },
+                // Evento de click no dia
+                dayClick: function(date, jsEvent, view) {
+                    console.table(savedDates);
+                },
+            });
+
+            // Tornar os itens arrastáveis
+            $('.item').draggable({
+                revert: true,
+                zIndex: 999,
+                helper: 'clone',
+                appendTo: 'body',
+                start: function(event, ui) {
+                    $(ui.helper).addClass("ui-helper");
+                }
+            });
+
+            // Atualizar a lista de itens
+            function updateItemList() {
+                $('#item-list .item').removeClass('hidden-item');
+                savedDates.forEach(function(savedDate) {
+                    var itemName = savedDate.item;
+                    $('#item-list .item[data-name="' + itemName + '"]').addClass('hidden-item');
+                });
+            }
+            
+            // Carregar a lista de itens
+            if (enableListUpdate) {
+                updateItemList();
+            }
+        });
+    </script>
+</body>
+</html>
