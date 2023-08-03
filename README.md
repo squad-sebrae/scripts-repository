@@ -32,7 +32,7 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
         CPNJ_MESSAGE="Atenção: CNPJ inválido."
         TELEFONE_MESSAGE="Atenção: Telefone inválido."
         CONFIRMATION_MESSAGE="Obrigado(a), a sua inscrição foi enviada."
-        YAZO_INTEGRATION="true">
+        YAZO_INTEGRATION="TOKEN DA YAZO">
     </script>
 
 - id: Manter sempre o valor padrão: salesforce-validations
@@ -53,7 +53,7 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
 - CPNJ_MESSAGE: Mensagem de erro de CNPJ
 - TELEFONE_MESSAGE: Mensagem de erro no telefone
 - CONFIRMATION_MESSAGE: Mensagem de confirmação
-- YAZO_INTEGRATION: Se true envia os dados para a YAZO
+- YAZO_INTEGRATION: Token fornecido pela YAZO
 
 OBS: Caso algum campo não seja necessário remover a referência do script e o HTML
 

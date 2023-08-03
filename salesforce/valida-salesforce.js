@@ -378,8 +378,7 @@ window.addEventListener('DOMContentLoaded', function () {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization:
-              'Bearer aeb65b739915411829cb069aee2fe9d07376f3d6be900246',
+            Authorization: `Bearer ${YAZO_INTEGRATION}`,
           },
           body: JSON.stringify(body),
         }
