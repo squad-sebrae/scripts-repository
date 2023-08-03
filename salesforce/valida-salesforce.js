@@ -5,19 +5,18 @@ window.addEventListener('DOMContentLoaded', function () {
     console.log('Falta de atributos: EXPIRATION_DATE_TIME - dd/mm/aaaa hh:mm')
     return
   }
+  const EXPIRATION_DATE_TIME = salesforce.getAttribute('EXPIRATION_DATE_TIME') // A data que será indisponibilizado o formulário de inscrição
 
   if (!salesforce.getAttribute('FORM_ID')) {
     console.log('Falta de atributos: FORM_ID - ID da TAG form')
     return
   }
+  const FORM_ID = salesforce.getAttribute('FORM_ID') // Coloque aqui o ID do FORM
 
   if (!salesforce.getAttribute('FORM_SUBMIT_ID')) {
     console.log('Falta de atributos: FORM_SUBMIT_ID - ID do botão de envio')
     return
   }
-
-  const EXPIRATION_DATE_TIME = salesforce.getAttribute('EXPIRATION_DATE_TIME') // A data que será indisponibilizado o formulário de inscrição
-  const FORM_ID = salesforce.getAttribute('FORM_ID') // Coloque aqui o ID do FORM
   const FORM_SUBMIT_ID = salesforce.getAttribute('FORM_SUBMIT_ID') // Coloque aqui o ID do botão
 
   const EXPIRATION_MESSAGE = salesforce.getAttribute('EXPIRATION_MESSAGE')
@@ -46,6 +45,8 @@ window.addEventListener('DOMContentLoaded', function () {
   const CNPJ_ID = salesforce.getAttribute('CNPJ_ID') // Coloque aqui o ID do CNPJ
 
   const TELEFONE_ID = salesforce.getAttribute('TELEFONE_ID') // Coloque aqui o ID do telefone
+
+  const YAZO_INTEGRATION = salesforce.getAttribute('YAZO_INTEGRATION') // Coloque true se houver integração com a YAZO
 
   // Mensagens de feedback
   const CPF_MESSAGE = salesforce.getAttribute('CPF_MESSAGE')
@@ -240,9 +241,26 @@ window.addEventListener('DOMContentLoaded', function () {
     return true
   }
 
-  document.getElementById(FORM_ID).addEventListener('submit', (event) => {
-    // Verificação do EMAIL - Removido, agora é feito através de um serviço externo
+  function getUniqueValue(string) {
+    let crcTable = []
+    for (let i = 0; i < 256; i++) {
+      let c = i
+      for (let j = 0; j < 8; j++) {
+        c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1
+      }
+      crcTable[i] = c
+    }
 
+    let crc = 0 ^ -1
+    for (let i = 0; i < string.length; i++) {
+      crc = (crc >>> 8) ^ crcTable[(crc ^ string.charCodeAt(i)) & 0xff]
+    }
+
+    crc = (crc ^ -1) >>> 0
+    return crc.toString(36)
+  }
+
+  document.getElementById(FORM_ID).addEventListener('submit', (event) => {
     // Verificação de CPF
     if (document.getElementById(CPF_ID) && CPF_ID) {
       let cpfInput = document.getElementById(CPF_ID)
@@ -307,6 +325,74 @@ window.addEventListener('DOMContentLoaded', function () {
         .replace(' ', '')
         .replace(' ', '')
     }
+
+    // Integração com a YAZO
+    if (YAZO_INTEGRATION) {
+      try {
+        const data = [...new FormData(event.target).entries()]
+        const urlYazo =
+          'https://sebraepr-2023-ss-v2-api-cbbe35c661c9.herokuapp.com/integration/users'
+
+        const body = {
+          name: undefined,
+          email: undefined,
+          password: 'No momento sem este campo no formulário',
+          ticket_name: undefined,
+          external_id: undefined,
+          cell_phone_35: undefined,
+          cpf: undefined,
+          cnpj: undefined,
+          city: undefined,
+        }
+
+        data.forEach((elements) => {
+          const key = elements[0]
+          const value = elements[1]
+
+          switch (key) {
+            case 'nome':
+              body.name = value
+              break
+            case 'email':
+              body.email = value
+              break
+            case 'cpf':
+              body.external_id = getUniqueValue(value)
+              body.cpf = value
+              break
+            case 'celular':
+              body.cell_phone_35 = value
+              break
+            case 'cnpj':
+              body.cnpj = value
+              break
+            case 'cidade':
+              body.city = value
+              break
+            default:
+              break
+          }
+        })
+
+        const options = {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization:
+              'Bearer aeb65b739915411829cb069aee2fe9d07376f3d6be900246',
+          },
+          body: JSON.stringify(body),
+        }
+
+        fetch(urlYazo, options)
+          .then((response) => response.json())
+          .then((data) => console.log(data))
+          .catch((error) => console.log(error))
+      } catch {
+        console.log('Erro ao integrar com a YAZO')
+      }
+    }
+
     // Desabilitando botão
     if (document.getElementById(FORM_SUBMIT_ID)) {
       document.getElementById(FORM_SUBMIT_ID).disabled = true
