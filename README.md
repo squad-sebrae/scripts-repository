@@ -12,8 +12,9 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
 
 ##### Exemplo de uso na página
 
+    <!-- JS de validações -->
     <script
-        src="https://squad-sebrae.github.io/scripts-repository/salesforce/valida-salesforce.min.js"
+        src="./valida-salesforce.js"
         id="salesforce-validations"
         EXPIRATION_DATE_TIME="01/01/2099 00:00"
         FORM_ID="SubmitForm"
@@ -32,30 +33,31 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
         CPNJ_MESSAGE="Atenção: CNPJ inválido."
         TELEFONE_MESSAGE="Atenção: Telefone inválido."
         CONFIRMATION_MESSAGE="Obrigado(a), a sua inscrição foi enviada."
-        YAZO_INTEGRATION="TOKEN DA YAZO">
+        BCS_INTEGRATION="true">
+    /**
+     * id: Manter sempre o valor padrão: salesforce-validations
+     * EXPIRATION_DATE_TIME: A data que será indisponibilizado o formulário de inscrição
+     * FORM_ID: ID do FORM
+     * FORM_SUBMIT_ID: Coloque aqui o ID do botão
+     * CIDADES_ID: ID do input de cidades
+     * REGIONAL_ID: ID do input de regional
+     * EXPIRATION_MESSAGE: Mensagem que será exibida quando o prazo da LP expirar
+     * EXPIRATION_FONT_COLOR: Cor da fonte da mensagem de expiração
+     * EXPIRATION_FONT_SIZE: Tamanho da fonte da mensagem de expiração
+     * EXPIRATION_BACKGROUND_COLOR: Cor de fundo da mensagem de expiração
+     * EMAIL_ID: ID do input de email
+     * CPF_ID: ID do input de CPF
+     * CNPJ_ID: ID do input de CNPJ
+     * TELEFONE_ID: ID do input de telefone
+     * CPF_MESSAGE: Mensagem de erro de CPF
+     * CPNJ_MESSAGE: Mensagem de erro de CNPJ
+     * TELEFONE_MESSAGE: Mensagem de erro no telefone
+     * CONFIRMATION_MESSAGE: Mensagem de confirmação
+     * BCS_INTEGRATION: Se true envia os dados para BCS
+     *
+     * OBS: Caso algum campo não seja necessário remover a referência do script e o HTML
+     */
     </script>
-
-- id: Manter sempre o valor padrão: salesforce-validations
-- EXPIRATION_DATE_TIME: A data que será indisponibilizado o formulário de inscrição
-- FORM_ID: ID do FORM
-- FORM_SUBMIT_ID: Coloque aqui o ID do botão
-- CIDADES_ID: ID do input de cidades
-- REGIONAL_ID: ID do input de regional
-- EXPIRATION_MESSAGE: Mensagem que será exibida quando o prazo da LP expirar
-- EXPIRATION_FONT_COLOR: Cor da fonte da mensagem de expiração
-- EXPIRATION_FONT_SIZE: Tamanho da fonte da mensagem de expiração
-- EXPIRATION_BACKGROUND_COLOR: Cor de fundo da mensagem de expiração
-- EMAIL_ID: ID do input de email
-- CPF_ID: ID do input de CPF
-- CNPJ_ID: ID do input de CNPJ
-- TELEFONE_ID: ID do input de telefone
-- CPF_MESSAGE: Mensagem de erro de CPF
-- CPNJ_MESSAGE: Mensagem de erro de CNPJ
-- TELEFONE_MESSAGE: Mensagem de erro no telefone
-- CONFIRMATION_MESSAGE: Mensagem de confirmação
-- YAZO_INTEGRATION: Token fornecido pela YAZO
-
-OBS: Caso algum campo não seja necessário remover a referência do script e o HTML
 
 #### Detalhes para integração da YAZO
 

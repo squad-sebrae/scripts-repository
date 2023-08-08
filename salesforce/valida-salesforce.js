@@ -46,7 +46,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
   const TELEFONE_ID = salesforce.getAttribute('TELEFONE_ID') // Coloque aqui o ID do telefone
 
-  const YAZO_INTEGRATION = salesforce.getAttribute('YAZO_INTEGRATION') // Coloque true se houver integração com a YAZO
+  const BCS_INTEGRATION = salesforce.getAttribute('BCS_INTEGRATION') // Coloque true se houver integração com a YAZO
 
   // Mensagens de feedback
   const CPF_MESSAGE = salesforce.getAttribute('CPF_MESSAGE')
@@ -327,22 +327,23 @@ window.addEventListener('DOMContentLoaded', function () {
     }
 
     // Integração com a YAZO
-    if (YAZO_INTEGRATION) {
+    if (BCS_INTEGRATION) {
       try {
         const data = [...new FormData(event.target).entries()]
-        const urlYazo =
-          'https://sebraepr-2023-ss-v2-api-cbbe35c661c9.herokuapp.com/integration/users'
+        const urlBCS = 'https://hom-mstorage-apps.pr.sebrae.com.br/sync/bcs'
 
         const body = {
-          name: undefined,
+          // qrCode: undefined,
+          id_edicao: 1,
+          linguagem: 'portugues',
+          nome_completo: undefined,
+          nome_cracha: undefined,
           email: undefined,
-          password: 'No momento sem este campo no formulário',
-          ticket_name: undefined,
-          external_id: undefined,
-          cell_phone_35: undefined,
+          cargo: 'Participante',
           cpf: undefined,
+          celular: undefined,
+          cidade: undefined,
           cnpj: undefined,
-          city: undefined,
         }
 
         data.forEach((elements) => {
@@ -351,23 +352,24 @@ window.addEventListener('DOMContentLoaded', function () {
 
           switch (key) {
             case 'nome':
-              body.name = value
+              body.nome_completo = value
+              body.nome_cracha = value
               break
             case 'email':
               body.email = value
               break
             case 'cpf':
-              body.external_id = getUniqueValue(value)
+              // body.qrCode = getUniqueValue(value)
               body.cpf = value
               break
             case 'celular':
-              body.cell_phone_35 = value
+              body.celular = value
               break
             case 'cnpj':
               body.cnpj = value
               break
             case 'cidade':
-              body.city = value
+              body.cidade = value
               break
             default:
               break
@@ -378,12 +380,11 @@ window.addEventListener('DOMContentLoaded', function () {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            Authorization: `Bearer ${YAZO_INTEGRATION}`,
           },
           body: JSON.stringify(body),
         }
 
-        fetch(urlYazo, options)
+        fetch(urlBCS, options)
           .then((response) => response.json())
           .then((data) => console.log(data))
           .catch((error) => console.log(error))
@@ -397,6 +398,8 @@ window.addEventListener('DOMContentLoaded', function () {
       document.getElementById(FORM_SUBMIT_ID).disabled = true
     }
     alert(CONFIRMATION_MESSAGE)
+
+    event.preventDefault()
   })
 
   // Lista de regionais e suas cidades
