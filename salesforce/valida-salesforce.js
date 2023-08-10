@@ -398,8 +398,6 @@ window.addEventListener('DOMContentLoaded', function () {
       document.getElementById(FORM_SUBMIT_ID).disabled = true
     }
     alert(CONFIRMATION_MESSAGE)
-
-    event.preventDefault()
   })
 
   // Lista de regionais e suas cidades
