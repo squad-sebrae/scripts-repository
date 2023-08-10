@@ -9,7 +9,10 @@ window.addEventListener('DOMContentLoaded', function () {
   if (!pagina) pagina = partes.pop()
 
   if (pagina === 'feiradoempreendedor') {
+    console.log('==========================================')
     console.log(pagina) // imprime o nome da página atual, sem a extensão
+    console.log('==========================================')
+
     document
       .getElementById('SubmitForm')
       .addEventListener('submit', (event) => {
