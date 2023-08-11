@@ -55,11 +55,11 @@ window.addEventListener('DOMContentLoaded', function () {
           })
 
           if (
-            body.nome_completo ||
-            body.nome_cracha ||
-            body.email ||
-            body.cpf ||
-            body.celular ||
+            body.nome_completo &&
+            body.nome_cracha &&
+            body.email &&
+            body.cpf &&
+            body.celular &&
             body.cidade
           ) {
             const options = {
