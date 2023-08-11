@@ -54,21 +54,30 @@ window.addEventListener('DOMContentLoaded', function () {
             }
           })
 
-          const options = {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Origin: 'https://www.sebraepr.com.br',
-            },
-            body: JSON.stringify(body),
-          }
+          if (
+            body.nome_completo ||
+            body.nome_cracha ||
+            body.email ||
+            body.cpf ||
+            body.celular ||
+            body.cidade
+          ) {
+            const options = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Origin: 'https://www.sebraepr.com.br',
+              },
+              body: JSON.stringify(body),
+            }
 
-          fetch(urlBCS, options)
-            .then((response) => response.json())
-            .then((data) => console.log('Integração com a BCS concluída'))
-            .catch((error) =>
-              console.log("Erro na integração com a BCS concluída'")
-            )
+            fetch(urlBCS, options)
+              .then((response) => response.json())
+              .then((data) => console.log('Integração com a BCS concluída'))
+              .catch((error) =>
+                console.log("Erro na integração com a BCS concluída'")
+              )
+          }
         } catch {
           console.log('Erro ao integrar com a BCS')
         }
