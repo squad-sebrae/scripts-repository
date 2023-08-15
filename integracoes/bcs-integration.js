@@ -2,16 +2,14 @@ window.addEventListener('DOMContentLoaded', function () {
   const url = window.location.pathname
 
   if (url.indexOf('feiradoempreendedor') !== -1) {
-    document
-      .getElementById('SubmitForm')
-      .addEventListener('submit', (event) => {
-        // Integração com a BCS
+    document.getElementById('SubmitForm').addEventListener(
+      'submit',
+      async (event) => {
         try {
           const data = [...new FormData(event.target).entries()]
           const urlBCS = 'https://hom-mstorage-apps.pr.sebrae.com.br/sync/bcs'
 
           const body = {
-            // qrCode: undefined,
             id_edicao: 1,
             linguagem: 'portugues',
             nome_completo: undefined,
@@ -37,7 +35,6 @@ window.addEventListener('DOMContentLoaded', function () {
                 body.email = value
                 break
               case 'cpf':
-                // body.qrCode = getUniqueValue(value)
                 body.cpf = value
                 break
               case 'celular':
@@ -71,16 +68,20 @@ window.addEventListener('DOMContentLoaded', function () {
               body: JSON.stringify(body),
             }
 
-            fetch(urlBCS, options)
-              .then((response) => response.json())
-              .then((data) => console.log('Integração com a BCS concluída'))
-              .catch((error) =>
-                console.log("Erro na integração com a BCS concluída'")
-              )
+            const response = await fetch(urlBCS, options)
+
+            if (response.status !== 200) {
+              event.preventDefault()
+              this.alert('Erro de conexão, tente novamente mais tarde.')
+            }
+
+            console.log('Integração com a BCS concluída')
           }
-        } catch {
-          console.log('Erro ao integrar com a BCS')
+        } catch (error) {
+          console.log('Erro ao integrar com a BCS', error)
         }
-      })
+      },
+      true
+    )
   }
 })
