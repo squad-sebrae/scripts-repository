@@ -42,11 +42,18 @@ window.addEventListener('DOMContentLoaded', function () {
 
   const CPF_ID = salesforce.getAttribute('CPF_ID') // Coloque aqui o ID do CPF
 
+  const CPF_SECTION = salesforce.getAttribute('SECAO_CPF') // ID da DIV que envolve o CPF para controle de exibição em caso de estrangeiros
+
+  const FOREIGN_ID = salesforce.getAttribute('ESTRANGEIRO_ID')
+
   const CNPJ_ID = salesforce.getAttribute('CNPJ_ID') // Coloque aqui o ID do CNPJ
 
   const TELEFONE_ID = salesforce.getAttribute('TELEFONE_ID') // Coloque aqui o ID do telefone
 
-  const BCS_INTEGRATION = salesforce.getAttribute('BCS_INTEGRATION') // Coloque true se houver integração com a YAZO
+  const BCS_INTEGRATION =
+    salesforce.getAttribute('BCS_INTEGRATION') == 'true' ? true : false // Coloque true se houver integração com a YAZO
+
+  if (BCS_INTEGRATION) console.log(BCS_INTEGRATION)
 
   // Mensagens de feedback
   const CPF_MESSAGE = salesforce.getAttribute('CPF_MESSAGE')
@@ -84,6 +91,48 @@ window.addEventListener('DOMContentLoaded', function () {
       form.innerHTML = `<div style="color: ${EXPIRATION_FONT_COLOR}; font-size: ${EXPIRATION_FONT_SIZE};">${EXPIRATION_MESSAGE}</div>`
     }
   }
+
+  // Script de estrangeiro: remove o campo CPF e gera um ID aleatório no CPF usando o email
+  if (CPF_SECTION && FOREIGN_ID) {
+    const cpfSection = document.getElementById(CPF_SECTION)
+    const cpfInput = document.getElementById(CPF_ID)
+    const emailInput = document.getElementById(EMAIL_ID)
+    function generateUniqueId(string) {
+      let crcTable = []
+      for (let i = 0; i < 256; i++) {
+        let c = i
+        for (let j = 0; j < 8; j++) {
+          c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1
+        }
+        crcTable[i] = c
+      }
+
+      let crc = 0 ^ -1
+      for (let i = 0; i < string.length; i++) {
+        crc = (crc >>> 8) ^ crcTable[(crc ^ string.charCodeAt(i)) & 0xff]
+      }
+
+      crc = (crc ^ -1) >>> 0
+      return crc.toString(36)
+    }
+
+    document.getElementById(FOREIGN_ID).addEventListener('change', (event) => {
+      if (!emailInput.value) {
+        event.target.checked = false
+        alert('E-mail é obrigatório!')
+        return
+      }
+
+      if (event.target.checked) {
+        cpfSection.style.display = 'none'
+        cpfInput.value = generateUniqueId(emailInput.value)
+        return
+      }
+      cpfInput.value = ''
+      cpfSection.style.display = 'block'
+    })
+  }
+
   // Script para evitar colar no input de confirmação de email
   if (document.getElementById(EMAIL_ID))
     document.getElementById(EMAIL_ID).onpaste = () => {
@@ -241,164 +290,162 @@ window.addEventListener('DOMContentLoaded', function () {
     return true
   }
 
-  function getUniqueValue(string) {
-    let crcTable = []
-    for (let i = 0; i < 256; i++) {
-      let c = i
-      for (let j = 0; j < 8; j++) {
-        c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1
-      }
-      crcTable[i] = c
-    }
-
-    let crc = 0 ^ -1
-    for (let i = 0; i < string.length; i++) {
-      crc = (crc >>> 8) ^ crcTable[(crc ^ string.charCodeAt(i)) & 0xff]
-    }
-
-    crc = (crc ^ -1) >>> 0
-    return crc.toString(36)
-  }
-
-  document.getElementById(FORM_ID).addEventListener('submit', (event) => {
-    // Verificação de CPF
-    if (document.getElementById(CPF_ID) && CPF_ID) {
-      let cpfInput = document.getElementById(CPF_ID)
-      if (
-        cpfInput.getAttribute('required') === null &&
-        cpfInput.value.length === 0
-      ) {
-        // Campo não obrigatório
-      } else if (!isValidCPF(cpfInput.value)) {
-        event.preventDefault()
-        cpfInput.value = ''
-        alert(CPF_MESSAGE)
-        return
-      }
-    }
-    // Verificação de CNPJ
-    if (document.getElementById(CNPJ_ID) && CNPJ_ID) {
-      let cnpjInput = document.getElementById(CNPJ_ID)
-      if (
-        cnpjInput.getAttribute('required') === null &&
-        cnpjInput.value.length === 0
-      ) {
-        // Campo não obrigatório
-      } else if (!isValidCNPJ(cnpjInput.value)) {
-        // Verificação de CNPJ
-        event.preventDefault()
-        cnpjInput.value = ''
-        alert(CPNJ_MESSAGE)
-        return
-      }
-    }
-    // Removendo MASK do input de telefone e validando telefones inválidos
-    if (document.getElementById(TELEFONE_ID) && TELEFONE_ID) {
-      let telefoneInput = document.getElementById(TELEFONE_ID)
-      let telefoneStr = String(telefoneInput.value)
-        .split(')')[1]
-        .replace(' ', '')
-        .replace(' ', '')
-        .replace('-', '')
-      if (
-        String(telefoneStr).includes('111111111') ||
-        String(telefoneStr).includes('222222222') ||
-        String(telefoneStr).includes('333333333') ||
-        String(telefoneStr).includes('444444444') ||
-        String(telefoneStr).includes('555555555') ||
-        String(telefoneStr).includes('666666666') ||
-        String(telefoneStr).includes('777777777') ||
-        String(telefoneStr).includes('888888888') ||
-        String(telefoneStr).includes('999999999') ||
-        String(telefoneStr).includes('000000000')
-      ) {
-        alert(TELEFONE_MESSAGE)
-        event.preventDefault()
-        return
-      }
-      telefoneInput.value = String(telefoneInput.value)
-        .replace('-', '')
-        .replace('(', '')
-        .replace('+', '')
-        .replace(')', '')
-        .replace(' ', '')
-        .replace(' ', '')
-        .replace(' ', '')
-    }
-
-    // Integração com a YAZO
-    if (BCS_INTEGRATION) {
-      try {
-        const data = [...new FormData(event.target).entries()]
-        const urlBCS = 'https://hom-mstorage-apps.pr.sebrae.com.br/sync/bcs'
-
-        const body = {
-          // qrCode: undefined,
-          id_edicao: 1,
-          linguagem: 'portugues',
-          nome_completo: undefined,
-          nome_cracha: undefined,
-          email: undefined,
-          cargo: 'Participante',
-          cpf: undefined,
-          celular: undefined,
-          cidade: undefined,
-          cnpj: undefined,
+  document.getElementById(FORM_ID).addEventListener(
+    'submit',
+    async (event) => {
+      // Verificação de CPF
+      if (document.getElementById(CPF_ID) && CPF_ID) {
+        let cpfInput = document.getElementById(CPF_ID)
+        if (
+          cpfInput.getAttribute('required') === null &&
+          cpfInput.value.length === 0
+        ) {
+          // Campo não obrigatório
+        } else if (!isValidCPF(cpfInput.value)) {
+          cpfInput.value = ''
+          alert(CPF_MESSAGE)
+          event.preventDefault()
+          return
         }
+      }
+      // Verificação de CNPJ
+      if (document.getElementById(CNPJ_ID) && CNPJ_ID) {
+        let cnpjInput = document.getElementById(CNPJ_ID)
+        if (
+          cnpjInput.getAttribute('required') === null &&
+          cnpjInput.value.length === 0
+        ) {
+          // Campo não obrigatório
+        } else if (!isValidCNPJ(cnpjInput.value)) {
+          // Verificação de CNPJ
+          cnpjInput.value = ''
+          alert(CPNJ_MESSAGE)
+          event.preventDefault()
+          return
+        }
+      }
+      // Removendo MASK do input de telefone e validando telefones inválidos
+      if (document.getElementById(TELEFONE_ID) && TELEFONE_ID) {
+        let telefoneInput = document.getElementById(TELEFONE_ID)
+        let telefoneStr = String(telefoneInput.value)
+          .split(')')[1]
+          .replace(' ', '')
+          .replace(' ', '')
+          .replace('-', '')
+        if (
+          String(telefoneStr).includes('111111111') ||
+          String(telefoneStr).includes('222222222') ||
+          String(telefoneStr).includes('333333333') ||
+          String(telefoneStr).includes('444444444') ||
+          String(telefoneStr).includes('555555555') ||
+          String(telefoneStr).includes('666666666') ||
+          String(telefoneStr).includes('777777777') ||
+          String(telefoneStr).includes('888888888') ||
+          String(telefoneStr).includes('999999999') ||
+          String(telefoneStr).includes('000000000')
+        ) {
+          alert(TELEFONE_MESSAGE)
+          event.preventDefault()
+          return
+        }
+        telefoneInput.value = String(telefoneInput.value)
+          .replace('-', '')
+          .replace('(', '')
+          .replace('+', '')
+          .replace(')', '')
+          .replace(' ', '')
+          .replace(' ', '')
+          .replace(' ', '')
+      }
 
-        data.forEach((elements) => {
-          const key = elements[0]
-          const value = elements[1]
+      // Integração com a YAZO
+      if (BCS_INTEGRATION) {
+        try {
+          const data = [...new FormData(event.target).entries()]
+          const urlBCS = 'https://hom-mstorage-apps.pr.sebrae.com.br/sync/bcs'
 
-          switch (key) {
-            case 'nome':
-              body.nome_completo = value
-              body.nome_cracha = value
-              break
-            case 'email':
-              body.email = value
-              break
-            case 'cpf':
-              // body.qrCode = getUniqueValue(value)
-              body.cpf = value
-              break
-            case 'celular':
-              body.celular = value
-              break
-            case 'cnpj':
-              body.cnpj = value
-              break
-            case 'cidade':
-              body.cidade = value
-              break
-            default:
-              break
+          const body = {
+            id_edicao: 1,
+            linguagem: 'portugues',
+            nome_completo: undefined,
+            nome_cracha: undefined,
+            email: undefined,
+            cargo: 'Participante',
+            cpf: undefined,
+            celular: undefined,
+            cidade: undefined,
+            cnpj: undefined,
           }
-        })
 
-        const options = {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(body),
+          data.forEach((elements) => {
+            const key = elements[0]
+            const value = elements[1]
+
+            switch (key) {
+              case 'nome':
+                body.nome_completo = value
+                body.nome_cracha = value
+                break
+              case 'email':
+                body.email = value
+                break
+              case 'cpf':
+                body.cpf = value
+                break
+              case 'celular':
+                body.celular = value
+                break
+              case 'cnpj':
+                body.cnpj = value
+                break
+              case 'cidade':
+                body.cidade = value
+                break
+              default:
+                break
+            }
+          })
+
+          if (
+            body.nome_completo &&
+            body.nome_cracha &&
+            body.email &&
+            body.cpf &&
+            body.celular &&
+            body.cidade
+          ) {
+            const options = {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                Origin: 'https://www.sebraepr.com.br',
+              },
+              body: JSON.stringify(body),
+            }
+
+            const response = await fetch(urlBCS, options)
+
+            if (response.status !== 200) {
+              event.preventDefault()
+              this.alert('Erro de conexão, tente novamente mais tarde.')
+              return
+            }
+
+            console.log('Integração com a BCS concluída')
+          }
+        } catch (error) {
+          console.log('Erro ao integrar com a BCS', error)
         }
-
-        fetch(urlBCS, options)
-          .then((response) => response.json())
-          .then((data) => console.log(data))
-          .catch((error) => console.log(error))
-      } catch {
-        console.log('Erro ao integrar com a YAZO')
       }
-    }
 
-    // Desabilitando botão
-    if (document.getElementById(FORM_SUBMIT_ID)) {
-      document.getElementById(FORM_SUBMIT_ID).disabled = true
-    }
-    alert(CONFIRMATION_MESSAGE)
-  })
+      // Desabilitando botão
+      if (document.getElementById(FORM_SUBMIT_ID)) {
+        document.getElementById(FORM_SUBMIT_ID).disabled = true
+      }
+      alert(CONFIRMATION_MESSAGE)
+    },
+    true
+  )
 
   // Lista de regionais e suas cidades
   const regionais = {

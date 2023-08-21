@@ -33,7 +33,9 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
         CPNJ_MESSAGE="Atenção: CNPJ inválido."
         TELEFONE_MESSAGE="Atenção: Telefone inválido."
         CONFIRMATION_MESSAGE="Obrigado(a), a sua inscrição foi enviada."
-        BCS_INTEGRATION="true">
+        SECAO_CPF=""
+        ESTRANGEIRO_ID=""
+        BCS_INTEGRATION="false">
     /**
      * id: Manter sempre o valor padrão: salesforce-validations
      * EXPIRATION_DATE_TIME: A data que será indisponibilizado o formulário de inscrição
@@ -53,6 +55,8 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
      * CPNJ_MESSAGE: Mensagem de erro de CNPJ
      * TELEFONE_MESSAGE: Mensagem de erro no telefone
      * CONFIRMATION_MESSAGE: Mensagem de confirmação
+     * SECAO_CPF: ID DIV que envolve o CPF. Oculta o CPF em caso de estrangeiro.
+     * ESTRANGEIRO_ID: ID do campo checkbox que fala se o agente é estrangeiro ou não.
      * BCS_INTEGRATION: Se true envia os dados para BCS
      *
      * OBS: Caso algum campo não seja necessário remover a referência do script e o HTML

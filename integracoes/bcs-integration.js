@@ -73,6 +73,7 @@ window.addEventListener('DOMContentLoaded', function () {
             if (response.status !== 200) {
               event.preventDefault()
               this.alert('Erro de conexão, tente novamente mais tarde.')
+              return
             }
 
             console.log('Integração com a BCS concluída')
