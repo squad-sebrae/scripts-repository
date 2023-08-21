@@ -53,8 +53,6 @@ window.addEventListener('DOMContentLoaded', function () {
   const BCS_INTEGRATION =
     salesforce.getAttribute('BCS_INTEGRATION') == 'true' ? true : false // Coloque true se houver integração com a YAZO
 
-  if (BCS_INTEGRATION) console.log(BCS_INTEGRATION)
-
   // Mensagens de feedback
   const CPF_MESSAGE = salesforce.getAttribute('CPF_MESSAGE')
     ? salesforce.getAttribute('CPF_MESSAGE')
@@ -294,7 +292,11 @@ window.addEventListener('DOMContentLoaded', function () {
     'submit',
     async (event) => {
       // Verificação de CPF
-      if (document.getElementById(CPF_ID) && CPF_ID) {
+      if (
+        document.getElementById(CPF_ID) &&
+        CPF_ID &&
+        !document.getElementById(FOREIGN_ID).checked
+      ) {
         let cpfInput = document.getElementById(CPF_ID)
         if (
           cpfInput.getAttribute('required') === null &&
