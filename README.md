@@ -14,7 +14,7 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
 
     <!-- JS de validações -->
     <script
-        src="./valida-salesforce.js"
+        src="https://squad-sebrae.github.io/scripts-repository/salesforce/valida-salesforce.min.js"
         id="salesforce-validations"
         EXPIRATION_DATE_TIME="01/01/2099 00:00"
         FORM_ID="SubmitForm"
