@@ -291,6 +291,8 @@ window.addEventListener('DOMContentLoaded', function () {
   document.getElementById(FORM_ID).addEventListener(
     'submit',
     async (event) => {
+      event.preventDefault() // Previnir evento default
+
       // Verificação de CPF
       if (
         document.getElementById(CPF_ID) &&
@@ -306,7 +308,6 @@ window.addEventListener('DOMContentLoaded', function () {
         } else if (!isValidCPF(cpfInput.value)) {
           cpfInput.value = ''
           alert(CPF_MESSAGE)
-          event.preventDefault()
           return
         }
       }
@@ -322,7 +323,6 @@ window.addEventListener('DOMContentLoaded', function () {
           // Verificação de CNPJ
           cnpjInput.value = ''
           alert(CPNJ_MESSAGE)
-          event.preventDefault()
           return
         }
       }
@@ -347,7 +347,6 @@ window.addEventListener('DOMContentLoaded', function () {
           String(telefoneStr).includes('000000000')
         ) {
           alert(TELEFONE_MESSAGE)
-          event.preventDefault()
           return
         }
         telefoneInput.value = String(telefoneInput.value)
@@ -426,9 +425,7 @@ window.addEventListener('DOMContentLoaded', function () {
             }
 
             const response = await fetch(urlBCS, options)
-
             if (response.status !== 200) {
-              event.preventDefault()
               this.alert('Erro de conexão, tente novamente mais tarde.')
               return
             }
@@ -445,6 +442,7 @@ window.addEventListener('DOMContentLoaded', function () {
         document.getElementById(FORM_SUBMIT_ID).disabled = true
       }
       alert(CONFIRMATION_MESSAGE)
+      event.target.submit() // Reativar evento default
     },
     true
   )
