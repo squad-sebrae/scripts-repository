@@ -63,17 +63,6 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
      */
     </script>
 
-#### Detalhes para integração da YAZO
-
-O "id" e "name" dos campos devem conter estes valores:
-
-- No campo nome: nome
-- No campo email: email
-- No campo CPF: cpf
-- No campo celular: celular
-- No campo CNPJ: cnpj
-- No campo cidade: cidade
-
 ### Icones
 
     https://squad-sebrae.github.io/scripts-repository/salesforce/AF_icone_baixo.svg
