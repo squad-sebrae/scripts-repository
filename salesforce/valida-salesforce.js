@@ -139,23 +139,30 @@ window.addEventListener('DOMContentLoaded', function () {
   // CPF MASK
   if (document.getElementById(CPF_ID))
     document.getElementById(CPF_ID).addEventListener('input', (event) => {
-      if (
-        event.target.value.length > 14 ||
-        isNaN(event.target.value.substr(-1))
-      )
+      const cpf = event.target.value.replace(/\D/g, '')
+      if (cpf.length > 11 || isNaN(event.target.value.substr(-1))) {
         event.target.value = event.target.value.substring(
           0,
           event.target.value.length - 1
         )
-      switch (event.target.value.length) {
+        return
+      }
+
+      switch (cpf.length) {
         case 3:
-          event.target.value += '.'
+          event.target.value = cpf.replace(/(\d{3})/, '$1.')
           break
-        case 7:
-          event.target.value += '.'
+        case 6:
+          event.target.value = cpf.replace(/(\d{3})(\d{3})/, '$1.$2.')
+          break
+        case 9:
+          event.target.value = cpf.replace(/(\d{3})(\d{3})(\d{3})/, '$1.$2.$3')
           break
         case 11:
-          event.target.value += '-'
+          event.target.value = cpf.replace(
+            /(\d{3})(\d{3})(\d{3})(\d{2})/,
+            '$1.$2.$3-$4'
+          )
           break
       }
     })
@@ -188,23 +195,48 @@ window.addEventListener('DOMContentLoaded', function () {
   // Telefone Mask
   if (document.getElementById(TELEFONE_ID))
     document.getElementById(TELEFONE_ID).addEventListener('input', (event) => {
-      if (
-        event.target.value.length > 20 ||
-        isNaN(event.target.value.substr(-1))
-      )
+      const telefone = event.target.value.replace(/\D/g, '')
+
+      if (telefone.length > 13 || isNaN(event.target.value.substr(-1))) {
         event.target.value = event.target.value.substring(
           0,
           event.target.value.length - 1
         )
-      switch (event.target.value.length) {
+        return
+      }
+
+      switch (telefone.length) {
         case 2:
-          event.target.value = '+55 (' + event.target.value + ') '
+          event.target.value = telefone.replace(/(\d{2})/, '+55 ($1) ')
           break
-        case 10:
+        case 5:
           event.target.value += ' '
           break
-        case 15:
-          event.target.value += '-'
+        case 9:
+          event.target.value = telefone.replace(
+            /(\d{2})(\d{2})(\d{1})(\d{4})/,
+            '+$1 ($2) $3 $4-'
+          )
+          break
+        case 11:
+          if (String(event.target.value).indexOf('+55') !== -1) {
+            event.target.value = telefone.replace(
+              /(\d{2})(\d{2})(\d{1})(\d{4})/,
+              '+$1 ($2) $3 $4-'
+            )
+            break
+          }
+
+          event.target.value = telefone.replace(
+            /(\d{2})(\d{1})(\d{4})(\d{4})/,
+            '+55 ($1) $2 $3-$4'
+          )
+          break
+        case 13:
+          event.target.value = telefone.replace(
+            /(\d{2})(\d{2})(\d{1})(\d{4})(\d{4})/,
+            '+$1 ($2) $3 $4-$5'
+          )
           break
       }
     })
@@ -349,16 +381,8 @@ window.addEventListener('DOMContentLoaded', function () {
           alert(TELEFONE_MESSAGE)
           return
         }
-        telefoneInput.value = String(telefoneInput.value)
-          .replace('-', '')
-          .replace('(', '')
-          .replace('+', '')
-          .replace(')', '')
-          .replace(' ', '')
-          .replace(' ', '')
-          .replace(' ', '')
+        telefoneInput.value = telefoneInput.value.replace(/\D/g, '')
       }
-
       // Integração com a YAZO
       if (BCS_INTEGRATION) {
         try {
