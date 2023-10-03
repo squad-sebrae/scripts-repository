@@ -1,0 +1,97 @@
+<style>
+    #container-consent-verify-modal {
+        position: fixed; 
+        z-index: 9999; 
+        top: 10px; 
+        right: 0;
+        left: 0; 
+        margin-right: 3%;
+        margin-left: 3%;
+        display: none;
+    }
+
+    @media screen and (max-width: 768px) {
+        #container-consent-verify-modal {
+            top: 70px; 
+        }
+    }
+
+
+    #notification-consent-verify-modal {
+        display: flex; 
+        flex-direction: row; 
+        background-color: rgba(205, 209, 228, 0.5);
+        padding: 2px;
+    }
+
+    #left-section-consent-verify-modal {
+        background-color: #005EB8; 
+        width: 20%; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center;
+    }
+
+    #right-section-consent-verify-modal {
+        background-color: #FFFFFF; 
+        width: 80%;
+    }
+
+    /* Classes animadas */
+    .scale-up-ver-top {
+	    -webkit-animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+	        animation: scale-up-ver-top 0.4s cubic-bezier(0.390, 0.575, 0.565, 1.000) both;
+    }
+    /* Animações */
+    @-webkit-keyframes scale-up-ver-top {
+    0% {
+        -webkit-transform: scaleY(0.4);
+                transform: scaleY(0.4);
+        -webkit-transform-origin: 100% 0%;
+                transform-origin: 100% 0%;
+    }
+    100% {
+        -webkit-transform: scaleY(1);
+                transform: scaleY(1);
+        -webkit-transform-origin: 100% 0%;
+                transform-origin: 100% 0%;
+    }
+    }
+    @keyframes scale-up-ver-top {
+    0% {
+        -webkit-transform: scaleY(0.4);
+                transform: scaleY(0.4);
+        -webkit-transform-origin: 100% 0%;
+                transform-origin: 100% 0%;
+    }
+    100% {
+        -webkit-transform: scaleY(1);
+                transform: scaleY(1);
+        -webkit-transform-origin: 100% 0%;
+                transform-origin: 100% 0%;
+    }
+    }
+
+</style>
+
+<div id="container-consent-verify-modal" class="scale-up-ver-top">
+    <div id="notification-consent-verify-modal">
+        <div id="left-section-consent-verify-modal" >
+            <img src="https://www.sebraepr.com.br/wp-content/themes/uncode-child/img/logo-sebrae-branca.svg" width="50px">
+        </div>
+        <div id="right-section-consent-verify-modal">
+            <div style="margin: 20px;">
+                <div style="margin-left: 15px"><label><input id="privacyPolicy" type="checkbox" required="" style="-webkit-appearance: auto; margin-right: 5px;" value=""><span>Declaro que li e estou ciente que os meus dados serão tratados conforme as diretrizes da <a style="position: inherit;display: contents;text-decoration: underline !important; color: blue" href="https://minio-cpe.sebrae.com.br/documento/politica-privacidade.pdf" target="_blank" rel="noopener noreferrer">Politica de Privacidade do Sebrae</a></span></label></div>
+                <div style="margin-left: 15px"><label><input id="termsOfUse" type="checkbox" required="" style="-webkit-appearance: auto; margin-right: 5px;" value=""><span>Declaro que estou de acordo com o <a style="position: inherit;display: contents;text-decoration: underline !important; color: blue" href="https://minio-cpe.sebrae.com.br/documento/termo-portal-sebrae-nacional.pdf" target="_blank" rel="noopener noreferrer">Termo de Uso</a></span></label></div>
+                <div style="margin-left: 15px"><label><input id="contentAndPromotions" type="checkbox" style="-webkit-appearance: auto; margin-right: 5px;" value=""><span>Aceito receber conteúdos e promoções do Sebrae PR (opcional)</span></label></div>
+            </div>
+            <div style="display: flex; align-items: end; justify-content: end; margin-right: 20px; margin-bottom: 20px;"><button id="btnWPModalCadastrar" type="submit" class="btn-signin btn-message" value="Cadastrar">Enviar</button></div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    const container = document.getElementById('container-consent-verify-modal')
+    container.style.display = 'block'
+</script>
