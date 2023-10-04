@@ -58,11 +58,12 @@
         document.getElementById('btn-consent-verify-modal').addEventListener('click', async () => {
             modalContainer.style.display = 'none'
             localStorage.setItem('userConsent', undefined)
+            const codAgent = localStorage.getItem('codAgente')
             const privacyPolicy = document.getElementById('privacyPolicy-consent-verify-modal').checked
             const termsOfUse = document.getElementById('termsOfUse-consent-verify-modal').checked
             const contentAndPromotions = document.getElementById('contentAndPromotions-consent-verify-modal').checked
 
-            if(privacyPolicy && termsOfUse) {
+            if(privacyPolicy && termsOfUse && codAgent) {
                 const docId = localStorage.getItem('docId')
                 const email = localStorage.getItem('email')
 
@@ -99,7 +100,6 @@
                     body: JSON.stringify(objConsent),
                 })
 
-                const codAgent = localStorage.getItem('codAgente')
                 await fetch(`https://apihml.pr.sebrae.com.br/sas-api/web/usuariosistema/recebimentoconteudo?codAgente=${codAgent}&status=${contentAndPromotions}`, {
                     headers : SAS_HEADER,
                     method: 'PUT'
