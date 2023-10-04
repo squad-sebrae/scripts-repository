@@ -1,0 +1,155 @@
+<link rel="stylesheet" href="https://squad-sebrae.github.io/scripts-repository/consent/verify/modal.css">
+
+<!-- Modal Layout Consentimento -->
+<form id='form-consent-verify-modal'>
+    <div id='container-consent-verify-modal' class='scale-up-ver-top'>
+        <div id='notification-consent-verify-modal'>
+            <div id='left-section-consent-verify-modal' >
+                <img src='https://www.sebraepr.com.br/wp-content/themes/uncode-child/img/logo-sebrae-branca.svg' width='50px'>
+            </div>
+            <div id='right-section-consent-verify-modal'>
+                <div style='margin: 20px;'>
+                    <div style='margin-left: 15px'><label><input id='privacyPolicy-consent-verify-modal' type='checkbox' required='' style='-webkit-appearance: auto; margin-right: 5px;' value=''><span>Declaro que li e estou ciente que os meus dados serão tratados conforme as diretrizes da <a style='position: inherit;display: contents;text-decoration: underline !important; color: blue' href='https://minio-cpe.sebrae.com.br/documento/politica-privacidade.pdf' target='_blank' rel='noopener noreferrer'>Politica de Privacidade do Sebrae</a></span></label></div>
+                    <div style='margin-left: 15px'><label><input id='termsOfUse-consent-verify-modal' type='checkbox' required='' style='-webkit-appearance: auto; margin-right: 5px;' value=''><span>Declaro que estou de acordo com o <a style='position: inherit;display: contents;text-decoration: underline !important; color: blue' href='https://minio-cpe.sebrae.com.br/documento/termo-portal-sebrae-nacional.pdf' target='_blank' rel='noopener noreferrer'>Termo de Uso</a></span></label></div>
+                    <div style='margin-left: 15px'><label><input id='contentAndPromotions-consent-verify-modal' type='checkbox' style='-webkit-appearance: auto; margin-right: 5px;' value=''><span>Aceito receber conteúdos e promoções do Sebrae PR (opcional)</span></label></div>
+                </div>
+                <div style='display: flex; align-items: end; justify-content: end; margin-right: 20px; margin-bottom: 20px;'>
+                    <button id='btn-consent-verify-modal' type='submit' class='btn-signin btn-message' value='Cadastrar'>Enviar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+
+<script>
+    const IS_PROD = false
+    const ONETRUST_URL = 'https://privacyportal-br.onetrust.com/'
+    const ONETRUST_API = `${ONETRUST_URL}request/v1/consentreceipts`
+    const modalContainer = document.getElementById('container-consent-verify-modal')
+
+    const cpfMask = (cpf) => {
+        // Remove todos os caracteres não numéricos
+        cpf = cpf.replace(/\D/g, '');
+    
+        // Verifica se o CPF possui 11 dígitos
+        if (cpf.length !== 11) {
+        return 'CPF inválido'; // Retorna uma mensagem de erro se não tiver 11 dígitos
+        }
+    
+        // Formata o CPF com a máscara XXX.XXX.XXX-XX
+        return cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+    }
+
+    window.addEventListener('DOMContentLoaded', async () => {
+        const name = localStorage.getItem('usuario-nome')
+        const token = localStorage.getItem('token')
+        if(!name || !token) return;  // Verificação se o usuário está logado
+        const SAS_HEADER = {
+            'authorization': token,
+            'app_key': '107c3c57-f673-4eab-9574-a5f98da2d2a2'
+        }
+
+        // Removendo carregamento de página do formulário
+        document.getElementById('form-consent-verify-modal').addEventListener('submit', e => {
+            e.preventDefault()
+        })
+
+        // Evento do botão de envio dos consentimentos
+        document.getElementById('btn-consent-verify-modal').addEventListener('click', async () => {
+            modalContainer.style.display = 'none'
+            localStorage.setItem('userConsent', undefined)
+            const privacyPolicy = document.getElementById('privacyPolicy-consent-verify-modal').checked
+            const termsOfUse = document.getElementById('termsOfUse-consent-verify-modal').checked
+            const contentAndPromotions = document.getElementById('contentAndPromotions-consent-verify-modal').checked
+
+            if(privacyPolicy && termsOfUse) {
+                const docId = localStorage.getItem('docId')
+                const email = localStorage.getItem('email')
+
+                // Cadastra consentimentos do usuário
+                const objConsent = {
+                    identifier: cpfMask(docId),
+                    requestInformation:
+                        'eyJhbGciOiJSUzUxMiJ9.eyJvdEp3dFZlcnNpb24iOjEsInByb2Nlc3NJZCI6IjVjMTdiYWJjLTJkYjktNGVkMC04OTY1LWRmM2FiZjRhZTg0MCIsInByb2Nlc3NWZXJzaW9uIjoxLCJpYXQiOiIyMDIzLTA4LTAzVDE0OjA2OjU3LjE2NyIsIm1vYyI6IkFQSSIsInBvbGljeV91cmkiOm51bGwsInN1YiI6IkNQRiIsImlzcyI6bnVsbCwidGVuYW50SWQiOiIxZTMzMjIwZi1iODA1LTRhOGItOTczZi02YjkwZThiZTgzOGYiLCJkZXNjcmlwdGlvbiI6IlNlciB1bWEgZm9udGUgZGUgaW5mb3JtYcOnw7VlcyBlIHJlY3Vyc29zIHBhcmEgZW1wcmVlbmRlZG9yZXMsIG1pY3JvIGUgcGVxdWVuYXMgZW1wcmVzYXMgZG8gZXN0YWRvIGRvIFBhcmFuw6EuIE8gcG9ydGFsIG9mZXJlY2UgY29udGXDumRvcyBzb2JyZSBnZXN0w6NvIGVtcHJlc2FyaWFsLCBjYXBhY2l0YcOnw7Vlcywgbm90w61jaWFzLCBpbmZvcm1hw6fDtWVzIHNvYnJlIGV2ZW50b3MgZSBwcm9ncmFtYXMgZGUgYXBvaW8gZGlzcG9uw612ZWlzLCBjb21vIGNvbnN1bHRvcmlhcywgbWVudG9yaWFzLCBhY2Vzc28gYSBjcsOpZGl0byBlIHBhcmNlcmlhcy4gTyBvYmpldGl2byDDqSBkaXNwb25pYmlsaXphciB1bSBlc3Bhw6dvIHZpcnR1YWwgcXVlIGF1eGlsaWUgb3MgZW1wcmVlbmRlZG9yZXMgYSB0b21hciBkZWNpc8O1ZXMgbWFpcyBhc3NlcnRpdmFzLCBhZHF1aXJpciBjb25oZWNpbWVudG9zIGUgaGFiaWxpZGFkZXMgZXNzZW5jaWFpcyBwYXJhIG8gc3VjZXNzbyBkb3Mgc2V1cyBuZWfDs2Npb3MuIEFsw6kiLCJjb25zZW50VHlwZSI6IkNPTkRJVElPTkFMVFJJR0dFUiIsImFsbG93Tm90R2l2ZW5Db25zZW50cyI6ZmFsc2UsImRvdWJsZU9wdEluIjpmYWxzZSwicHVycG9zZXMiOlt7ImlkIjoiMTMxMmQ1NjUtYTM3Zi00N2VmLWFmNWQtMGQxNjFkZDdlMDYzIiwidmVyc2lvbiI6MiwicGFyZW50SWQiOm51bGwsInRvcGljcyI6W10sImN1c3RvbVByZWZlcmVuY2VzIjpbXSwiZW5hYmxlR2VvbG9jYXRpb24iOmZhbHNlfSx7ImlkIjoiMTNiZmIxMTktYmI0Yy00NDEyLTk3ZTItODA5MzI5OTI3YTkwIiwidmVyc2lvbiI6MSwicGFyZW50SWQiOm51bGwsInRvcGljcyI6W10sImN1c3RvbVByZWZlcmVuY2VzIjpbXSwiZW5hYmxlR2VvbG9jYXRpb24iOmZhbHNlfSx7ImlkIjoiNWU2NDM0MDQtNGVlNi00NTQ3LWFmNWItZjE1MjcyMWIxZmYwIiwidmVyc2lvbiI6MiwicGFyZW50SWQiOm51bGwsInRvcGljcyI6W10sImN1c3RvbVByZWZlcmVuY2VzIjpbXSwiZW5hYmxlR2VvbG9jYXRpb24iOmZhbHNlfV0sIm5vdGljZXMiOltdLCJkc0RhdGFFbGVtZW50cyI6WyJFbWFpbCIsIk5hbWUiXSwiYXV0aGVudGljYXRpb25SZXF1aXJlZCI6ZmFsc2UsInJlY29uZmlybUFjdGl2ZVB1cnBvc2UiOmZhbHNlLCJvdmVycmlkZUFjdGl2ZVB1cnBvc2UiOnRydWUsImR5bmFtaWNDb2xsZWN0aW9uUG9pbnQiOmZhbHNlLCJhZGRpdGlvbmFsSWRlbnRpZmllcnMiOlsiRW1haWwiXSwibXVsdGlwbGVJZGVudGlmaWVyVHlwZXMiOmZhbHNlLCJlbmFibGVQYXJlbnRQcmltYXJ5SWRlbnRpZmllcnMiOmZhbHNlLCJwYXJlbnRQcmltYXJ5SWRlbnRpZmllcnNUeXBlIjpudWxsLCJhZGRpdGlvbmFsUGFyZW50SWRlbnRpZmllclR5cGVzIjpbXSwiZW5hYmxlR2VvbG9jYXRpb24iOmZhbHNlfQ.E-S7hb0gHLrVynDTFqIzOb0E_-Na0TIh7-gCElzaa2P5tuUJaafCjUzQhM1Ff0HmOOahAdFYB4k8NFD3Ymq1tYggGo9Z0t4wQXw3yoamsGrzwYg1yFZ0rOrIXqDIZZvkO7eodc4YRndgQKYMdW3suzMRAqoixSYOw_IT4ovh_X0gtFXAsErn74sGPVBCVk2VHK41Y8EsQ-My2GLp0VJLSAXpoAwJVEZ0LUqMJseE0nyeh6ipnpNbSYBkug_QjLCJTD2M63NdZiZrbBCmBzpo5bVjXZQfo7M3tXnoGLIs4wZgog32bDFneZlPUiEpNVYOaY_bi8HbiNKqLeXfDU5cCBOD-tso85Pg50hiByCsW7pyNbQVU_R4kVZ6d6CiDbJKX7LCp-pGuNS2aIQzzNnrAwYoUOq12q-zw4isC44Q-gbeBKBmo2ojLR7T7A5xCONUU-WzGgsobwUuCnThLOCfEsp7hzXNdcgVQJK3D0pAKID0X_evwJHc5_kGrOwPBksoAFy6UHLdYUTAPAxpMwkU4PHxop1UFB8AGMgk_WRoI4xIkjHFpTbAvmqEPoXOVRahR9IECvTnmOxO64G_Sa7mjKE3e8yW25VuLAvW7Y9TO6gNgCnyMQ9ReTijcQbCss_AZIn5HZQ24e6wWk1xLXXCP4DXSwDbm5IEulGGQzGO3ts',
+                    purposes: [
+                        {
+                        Id: '1312d565-a37f-47ef-af5d-0d161dd7e063',
+                        TransactionType: 'CONFIRMED',
+                        },
+                        {
+                        Id: '13bfb119-bb4c-4412-97e2-809329927a90',
+                        TransactionType: 'CONFIRMED',
+                        },
+                        {
+                        Id: '5e643404-4ee6-4547-af5b-f152721b1ff0',
+                        TransactionType: 'CONFIRMED',
+                        },
+                    ],
+                    test: !IS_PROD,
+                    dsDataElements: {
+                        Email: email,
+                        Name: name,
+                    },
+                }
+            
+                // Enviando dados para OneTrust
+                await fetch(ONETRUST_API, {
+                    headers: { 'Content-Type': 'application/json' },
+                    method: 'POST',
+                    body: JSON.stringify(objConsent),
+                })
+
+                const codAgent = localStorage.getItem('codAgente')
+                await fetch(`https://apihml.pr.sebrae.com.br/sas-api/web/usuariosistema/recebimentoconteudo?codAgente=${codAgent}&status=${contentAndPromotions}`, {
+                    headers : SAS_HEADER,
+                    method: 'PUT'
+                })
+            }
+        })
+
+        // Busca informações do usuário para serem enviadas para OneTrust caso elas não existam no localStorage
+        if(!localStorage.getItem('docId') || !localStorage.getItem('email')) {
+            const responseAgent = await fetch('https://apihml.pr.sebrae.com.br/lgpd-api/agente', {
+                headers : SAS_HEADER
+            })
+            const bodyAgent = await responseAgent.text()
+            let email = /<email>(?<content>(.|\n)*?)<\/email>/.exec(bodyAgent)[1]
+            let docId = /<docId>(?<content>(.|\n)*?)<\/docId>/.exec(bodyAgent)[1]
+
+            // Salvando informações no local storage
+            localStorage.setItem('docId', docId.length === 10 ? '0' + docId : docId)
+            localStorage.setItem('email', email)
+        }
+
+        if(localStorage.getItem('docId')) {
+            // Verificação do consentimento salvo no localStorage --> Evita chamadas desnecessárias
+            if(localStorage.getItem('userConsent')) {
+                if(localStorage.getItem('userConsent') == 'false')
+                    modalContainer.style.display = 'block'
+                return
+            }
+
+            // Verificação do consentimento
+            fetch(`https://hom-mstorage-apps.pr.sebrae.com.br/consent/verify?cpf=${localStorage.getItem('docId')}&allPointsColeted=true&searchNotMask=true`)
+                .then(response => {
+                    if (!response.ok) {
+                    throw new Error('Erro na requisição')
+                    }
+                    return response.json()
+                })
+                .then(data => {
+                    if(!data) return
+                    const collectionPoint = data.find(item => item.collectionPointUUID === '5c17babc-2db9-4ed0-8965-df3abf4ae840')
+                    if(!collectionPoint) {
+                        modalContainer.style.display = 'block'
+                        localStorage.setItem('userConsent', false)
+                        return
+                    }
+                    localStorage.setItem('userConsent', true)
+                })
+                .catch(error => {
+                    console.error('Ocorreu um erro:', error)
+                })
+        }
+    })
+</script>
