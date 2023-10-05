@@ -1,8 +1,8 @@
 <link rel="stylesheet" href="https://squad-sebrae.github.io/scripts-repository/consent/verify/modal.min.css">
 
 <!-- Modal Layout Consentimento -->
-<form id='form-consent-verify-modal'>
-    <div id='container-consent-verify-modal' class='scale-up-ver-top'>
+<div id='container-consent-verify-modal' class='scale-up-ver-top'>
+    <form id='form-consent-verify-modal'>
         <div id='notification-consent-verify-modal'>
             <div id='left-section-consent-verify-modal' >
                 <img src='https://www.sebraepr.com.br/wp-content/themes/uncode-child/img/logo-sebrae-branca.svg' width='50px'>
@@ -14,12 +14,12 @@
                     <div style='margin-left: 15px'><label><input id='contentAndPromotions-consent-verify-modal' type='checkbox' style='-webkit-appearance: auto; margin-right: 5px;' value=''><span>Aceito receber conteúdos e promoções do Sebrae PR (opcional)</span></label></div>
                 </div>
                 <div style='display: flex; align-items: end; justify-content: end; margin-right: 20px; margin-bottom: 20px;'>
-                    <button id='btn-consent-verify-modal' type='submit' class='btn-signin btn-message' value='Cadastrar'>Enviar</button>
+                    <button id='btn-consent-verify-modal' type='submit' class='btn-signin btn-message' value='Enviar'>Enviar</button>
                 </div>
             </div>
         </div>
-    </div>
-</form>
+    </form>
+</div>
 
 <script>
     const IS_PROD = false
@@ -56,14 +56,16 @@
 
         // Evento do botão de envio dos consentimentos
         document.getElementById('btn-consent-verify-modal').addEventListener('click', async () => {
-            modalContainer.style.display = 'none'
-            localStorage.setItem('userConsent', undefined)
+            const btn = document.getElementById('btn-consent-verify-modal')
+
             const codAgent = localStorage.getItem('codAgente')
             const privacyPolicy = document.getElementById('privacyPolicy-consent-verify-modal').checked
             const termsOfUse = document.getElementById('termsOfUse-consent-verify-modal').checked
             const contentAndPromotions = document.getElementById('contentAndPromotions-consent-verify-modal').checked
 
             if(privacyPolicy && termsOfUse && codAgent) {
+                btn.innerHTML = 'Carregando'
+                btn.disabled  = 'disabled'
                 const docId = localStorage.getItem('docId')
                 const email = localStorage.getItem('email')
 
@@ -104,6 +106,9 @@
                     headers : SAS_HEADER,
                     method: 'PUT'
                 })
+
+                modalContainer.style.display = 'none'
+                localStorage.setItem('userConsent', 'true')
             }
         })
 
@@ -142,10 +147,10 @@
                     const collectionPoint = data.find(item => item.collectionPointUUID === '5c17babc-2db9-4ed0-8965-df3abf4ae840')
                     if(!collectionPoint) {
                         modalContainer.style.display = 'block'
-                        localStorage.setItem('userConsent', false)
+                        localStorage.setItem('userConsent', 'false')
                         return
                     }
-                    localStorage.setItem('userConsent', true)
+                    localStorage.setItem('userConsent', 'true')
                 })
                 .catch(error => {
                     console.error('Ocorreu um erro:', error)
