@@ -54,7 +54,7 @@ Repositório de scripts uteis para uso exclusivo do SEBRAE
      * CPF_MESSAGE: Mensagem de erro de CPF
      * CPNJ_MESSAGE: Mensagem de erro de CNPJ
      * TELEFONE_MESSAGE: Mensagem de erro no telefone
-     * CONFIRMATION_MESSAGE: Mensagem de confirmação
+     * CONFIRMATION_MESSAGE: Mensagem de confirmação. Remova caso não queira que exiba o "alert" de obrigado no final do formulário.
      * SECAO_CPF: ID DIV que envolve o CPF. Oculta o CPF em caso de estrangeiro.
      * ESTRANGEIRO_ID: ID do campo checkbox que fala se o agente é estrangeiro ou não.
      * BCS_INTEGRATION: Se true envia os dados para BCS

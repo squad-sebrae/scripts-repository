@@ -68,7 +68,7 @@ window.addEventListener('DOMContentLoaded', function () {
 
   const CONFIRMATION_MESSAGE = salesforce.getAttribute('CONFIRMATION_MESSAGE')
     ? salesforce.getAttribute('CONFIRMATION_MESSAGE')
-    : 'Obrigado(a), a sua inscrição foi enviada.'
+    : undefined
 
   // Validação de tempo de disponibilidade da LP
   if (document.getElementById(FORM_ID) && EXPIRATION_DATE_TIME) {
@@ -465,7 +465,9 @@ window.addEventListener('DOMContentLoaded', function () {
       if (document.getElementById(FORM_SUBMIT_ID)) {
         document.getElementById(FORM_SUBMIT_ID).disabled = true
       }
-      alert(CONFIRMATION_MESSAGE)
+      
+      if(CONFIRMATION_MESSAGE) alert(CONFIRMATION_MESSAGE)
+
       event.target.submit() // Reativar evento default
     },
     true
