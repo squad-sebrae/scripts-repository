@@ -326,21 +326,24 @@ window.addEventListener('DOMContentLoaded', function () {
       event.preventDefault() // Previnir evento default
 
       // Verificação de CPF
-      if (
-        document.getElementById(CPF_ID) &&
-        CPF_ID &&
-        !document.getElementById(FOREIGN_ID).checked
-      ) {
-        let cpfInput = document.getElementById(CPF_ID)
-        if (
-          cpfInput.getAttribute('required') === null &&
-          cpfInput.value.length === 0
-        ) {
-          // Campo não obrigatório
-        } else if (!isValidCPF(cpfInput.value)) {
-          cpfInput.value = ''
-          alert(CPF_MESSAGE)
-          return
+      if (document.getElementById(CPF_ID) && CPF_ID) {
+        const foreign_checkbox = document.getElementById(FOREIGN_ID)
+
+        if (foreign_checkbox && foreign_checkbox.checked) {
+          // Caso o agente for estrangeiro não validamos o CPF
+        } else if (!foreign_checkbox || !foreign_checkbox.checked) {
+          // caso o foreign_checkbox não exista ou não esteja selecionado não é permitodo estrangeiros
+          let cpfInput = document.getElementById(CPF_ID)
+          if (
+            cpfInput.getAttribute('required') === null &&
+            cpfInput.value.length === 0
+          ) {
+            // Campo não obrigatório
+          } else if (!isValidCPF(cpfInput.value)) {
+            cpfInput.value = ''
+            alert(CPF_MESSAGE)
+            return
+          }
         }
       }
       // Verificação de CNPJ
