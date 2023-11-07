@@ -197,6 +197,10 @@ window.addEventListener(
           body: JSON.stringify(objConsent),
         })
 
+        // Verificação de campos obrigatórios com valor default
+        if (!objSebrae.logradouro) objSebrae.logradouro = 'INEXISTENTE'
+        if (!objSebrae.bairro) objSebrae.bairro = 'INEXISTENTE'
+
         // Enviando dados para o SAS
         const responseSAS = await fetch(CADASTRO_API, {
           headers: { 'Content-Type': 'application/json' },
