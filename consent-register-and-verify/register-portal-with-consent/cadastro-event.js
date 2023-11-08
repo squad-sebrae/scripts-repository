@@ -1,7 +1,7 @@
 window.addEventListener(
   'DOMContentLoaded',
   () => {
-    const IS_PROD = false
+    const IS_PROD = true
     const MESSAGE_ERROR =
       'Estamos enfrentando problemas de conexão, por favor, tente novamente em alguns minutos'
 
