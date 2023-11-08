@@ -1,7 +1,7 @@
 window.addEventListener(
   'DOMContentLoaded',
   () => {
-    const IS_PROD = true
+    const IS_PROD = false
     const MESSAGE_ERROR =
       'Estamos enfrentando problemas de conexão, por favor, tente novamente em alguns minutos'
 
@@ -59,6 +59,7 @@ window.addEventListener(
       contentAndPromotions: undefined,
     }
 
+    // Inserção do HTML de consentimentos
     const submitButton = document.getElementsByClassName('buttons-login')[1]
 
     const htmlPrivacyPolicy =
@@ -97,6 +98,26 @@ window.addEventListener(
     submitButton.insertAdjacentHTML('beforebegin', htmlTermsOfUse)
     submitButton.insertAdjacentHTML('beforebegin', htmlContentAndPromotions)
 
+    // Evento de verificação dos dados no CEP
+    document.getElementsByName('your-cep')[0].addEventListener(
+      'focusout',
+      () => {
+        setTimeout(() => {
+          // Rua
+          const road = document.getElementsByName('your-log')[0]
+          if (road.value) road.disabled = true
+          else road.disabled = false
+
+          // Bairro
+          const neighborhood = document.getElementsByName('your-bairro')[0]
+          if (neighborhood.value) neighborhood.disabled = true
+          else neighborhood.disabled = false
+        }, 1000)
+      },
+      false
+    )
+
+    // Evento de cadastro
     const form = document.getElementsByClassName('form-cadastro-cadastrar')
     form[0].addEventListener(
       'submit',
