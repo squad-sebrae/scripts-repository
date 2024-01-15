@@ -130,7 +130,7 @@
             }
 
             // Verificação do consentimento
-            fetch(`https://hom-mstorage-apps.pr.sebrae.com.br/consent/verify?cpf=${localStorage.getItem('docId')}&allPointsColeted=true&searchNotMask=true`)
+            fetch(`https://mstorage-apps.pr.sebrae.com.br/consent/verify?cpf=${localStorage.getItem('docId')}&allPointsColeted=true&searchNotMask=true`)
                 .then(response => {
                     if (!response.ok) {
                     throw new Error('Erro na requisição')
