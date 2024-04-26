@@ -1,0 +1,331 @@
+<!-- CSS -->
+<style>
+  /* Titulo dos Campos */
+  .formulario .campo label {
+    margin-bottom: 0px !important;
+  }
+  .formulario label2 {
+    font-family: 'Campuni', Sans-serif;
+    font-size: 16px;
+    margin-top: -6px;
+    color: #485585;
+  }
+  .formulario label2:hover {
+  }
+  .formulario .campo obs {
+    font-size: 12px;
+  }
+  /* Estilo dos Campos */
+  .formulario .campo input[type='text'],
+  .formulario .campo input[type='select'],
+  .formulario .campo input[type='email'],
+  .formulario .campo input[type='textarea'],
+  .formulario .campo select {
+    font-size: 16px;
+    font-weight: 400;
+    color: #485585;
+    background-color: #fff;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-color: #061041;
+    border-radius: 10px 10px 10px 10px;
+    padding: 8px 16px 8px 16px;
+    width: 100%;
+    height: 40px;
+    margin-top: 0px;
+    margin-bottom: 16px;
+  }
+  .formulario .campo input[type='text']:hover,
+  .formulario .campo input[type='text']:hover,
+  .formulario .campo input[type='select']:hover,
+  .formulario .campo input[type='email']:hover,
+  .formulario .campo input[type='textarea']:hover,
+  .formulario .campo select:hover {
+    background-color: #f4f7fe;
+  }
+  .formulario .campo input[type='text']:active,
+  input[type='select']:active,
+  input[type='email']:active,
+  input[type='textarea']:active,
+  select:active {
+    background: #e9edf7;
+  }
+  .formulario .campo input[type='text']:valid,
+  input[type='select']:valid,
+  input[type='email']:valid,
+  input[type='textarea']:valid,
+  select:valid {
+    background: #f4f7fe;
+    color: #000;
+    font-weight: 600;
+  }
+  /* Checkbox e Seletor Radius */
+  .formulario input[type='checkbox'],
+  .formulario input[type='radio'] {
+    width: 16px !important;
+    height: 16px !important;
+    background-color: #fff;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-color: #061041;
+    margin-bottom: 24px;
+  }
+  /* Seta personalizaçda dos Seletores */
+  .formulario .campo select {
+    appearance: none;
+    background-image: url('https://sites.pr.sebrae.com.br/portal2022/wp-content/uploads/2022/05/10276A_AF_icone_baixo.svg');
+    background-repeat: no-repeat;
+    background-position: calc(100% - 12px) center;
+    background-size: 24px;
+  }
+  /* Botão */
+  .formulario input[type='submit'] {
+    font-family: 'Campuni', Sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-style: normal;
+    text-decoration: none;
+    color: #ffffff;
+    background-color: #0041d9;
+    border-style: solid;
+    border-width: 1px 1px 1px 1px;
+    border-color: #0000001a;
+    border-radius: 8px 8px 8px 8px;
+    padding: 12px 16px 12px 16px;
+    width: 100%;
+  }
+  .formulario input[type='submit']:hover {
+    background-color: #0024a9;
+  }
+  /* Link Privacidade */
+  .formulario a {
+    text-decoration: underline !important;
+    font-weight: 600;
+    color: #3b89ff;
+  }
+  .formulario a:active,
+  a:hover {
+    color: #10bcf2;
+  }
+  /* Validar E-mail */
+  .safetyoptin-result-message {
+    background-color: rgba(255, 255, 255, 0.8);
+    width: fit-content;
+    margin: auto;
+    border-radius: 20px;
+    padding: 2px 5px 2px 5px;
+  }
+</style>
+
+<!-- HTML -->
+<form
+  id="SubmitForm"
+  class="formulario"
+  action="https://cloud.divulga.sebraepr.com.br/processalp_portal"
+  method="post"
+  name="SubmitForm"
+>
+  <input
+    name="_URLRedireciona"
+    type="hidden"
+    value="https://www.sebraepr.com.br/obrigado/"
+  />
+  <input name="origem" type="hidden" value="LP_teste" />
+  <input name="localidade" type="hidden" value="BR" />
+  <input name="oficina" type="hidden" value="True" />
+  <input name="apiname" type="hidden" value="API_Portal" /><!-- Imputs -->
+  <div class="campo">
+    <label for="nome">Nome Completo<sup>*</sup></label>
+    <obs>(Obrigatório)</obs>
+    <input id="nome" name="nome" type="text" required />
+  </div>
+  <div class="campo">
+    <label for="cpf">CPF<sup>*</sup></label> <obs>(Obrigatório)</obs>
+    <input id="cpf" name="cpf" type="text" required />
+  </div>
+  <div class="campo">
+    <label for="cnpj">CNPJ<sup>*</sup></label> <obs>(Obrigatório)</obs>
+    <input id="cnpj" name="cnpj" type="text" required />
+  </div>
+  <div class="campo">
+    <label for="email">E-mail<sup>*</sup></label> <obs>(Obrigatório)</obs>
+    <input id="email" name="email" type="email" required />
+  </div>
+  <div class="campo">
+    <label for="celular">Telefone<sup>*</sup></label> <obs>(Obrigatório)</obs>
+    <input id="celular" name="celular" type="text" required />
+  </div>
+  <div class="campo">
+    <label for="porte">Qual o porte da sua empresa?<sup>*</sup></label>
+    <obs>(Obrigatório)</obs>
+    <select name="porte" id="porte" required>
+      <option value="CPF">Pessoa Física</option>
+      <option value="MEI">
+        Microempreendedor individual (faturamento até R$ 81 mil)
+      </option>
+      <option value="Micro a pequena">
+        Micro a pequena (faturamento até R$ 360.000,00)
+      </option>
+      <option value="Pequena a média">
+        Pequena a média (faturamento até R$ 4,8 milhões)
+      </option>
+      <option value="Média a grande">
+        Média a grande (faturamento acima R$ 12 milhões)
+      </option>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="modalidade">Selecione a modalidade de sua participação</label>
+    <select name="modalidade" id="modalidade" required>
+      <option value="Online">Online – Link da transmissão no seu e-mail</option>
+      <option value="Presencial">
+        Presencial - Endereço Loren Ipsun 123, Cidade - PR
+      </option>
+      <option value="Presencial">
+        Presencial - Endereço Loren Ipsun 123, Cidade - PR
+      </option>
+      <option value="Presencial">
+        Presencial - Endereço Loren Ipsun 123, Cidade - PR
+      </option>
+    </select>
+  </div>
+  <div class="campo">
+    <label for="cidade">Qual a sua cidade?</label>
+    <select name="cidade" id="cidade" required>
+      <!-- Cidades adicionadas via JavaScript - Não esquecer de passar o ID do campo para o SCRIPT -->
+    </select>
+
+    <!-- A regional será definida conforme a cidade selecionada -->
+    <input type="text" name="regional" id="regional" style="display: none" />
+  </div>
+  <!-- Aceites LGDP - UIC -->
+  <div class="campo">
+    <label for="aceite">
+      Solicitamos alguns dados pessoais para melhor tratativa no seu
+      atendimento. Para mais detalhes, acesse nosso Portal da LGPD:
+      <a
+        type="portalPrivacidade"
+        href="https://www.sebraepr.com.br/privacidade/"
+        >sebraepr.com.br/privacidade</a
+      >. <sup>*</sup> <obs>(Obrigatório)</obs>
+    </label>
+    <div
+      style="width: 90%; display: flex; margin-top: 8px; margin-bottom: 16px"
+    >
+      <div style="width: 24px; margin-left: 16px">
+        <input
+          class="checkbox"
+          type="checkbox"
+          id="aceite"
+          name="aceite"
+          value="true"
+          required
+        />
+      </div>
+      <div style="width: 90%; display: inline-block">
+        <label2 class="aceite" required for="aceite">
+          Concordo com a Política de Privacidade do Sebrae PR.</label2
+        >
+      </div>
+    </div>
+  </div>
+  <!-- Aceites LGDP - UIC -->
+  <div class="campo">
+    <label for="comunicacaoLGPD"
+      >Fique por dentro das ações do Sebrae PR. Receba dicas e ofertas
+      exclusivas que vão impulsionar seu negócio.<sup>*</sup
+      ><obs>(Obrigatório)</obs>
+    </label>
+    <div
+      style="
+        width: 90%;
+        display: flex;
+        margin-top: 16px;
+        margin-bottom: 0px;
+        margin-left: 16px;
+      "
+    >
+      <input
+        type="radio"
+        class="comunicacaoLGPD"
+        id="comunicacaoLGPD"
+        name="radio"
+        value="true"
+        required
+      />
+      <label2 style="margin-left: 4px" class="radio">Sim, eu quero!</label2>
+    </div>
+    <div
+      style="width: 90%; display: flex; margin-bottom: 8px; margin-left: 16px"
+    >
+      <input
+        type="radio"
+        class="comunicacaoLGPD"
+        id="comunicacao1"
+        name="radio"
+        value="false"
+        required
+      />
+      <label2 style="margin-left: 4px" class="radio">Não é para mim.</label2>
+    </div>
+  </div>
+  <!-- Botão Enviar -->
+  <input
+    type="submit"
+    id="enviar"
+    value="Realizar Inscrição"
+    form="SubmitForm"
+  />
+</form>
+
+<!-- Mail Validatator -->
+<script src="https://optin.safetymails.com/main/safetyscript/fa3b23b4179a309d106124afb9ad909cb45b1a7b/safetyoptin.js"></script>
+
+<!-- JS de validações -->
+<script
+  src="./valida-salesforce.js"
+  id="salesforce-validations"
+  EXPIRATION_DATE_TIME="01/01/2099 00:00"
+  FORM_ID="SubmitForm"
+  FORM_SUBMIT_ID="enviar"
+  CIDADES_ID="cidade"
+  REGIONAL_ID="regional"
+  EXPIRATION_MESSAGE="Inscrições encerradas!"
+  EXPIRATION_FONT_COLOR="#000"
+  EXPIRATION_FONT_SIZE="24px"
+  EXPIRATION_BACKGROUND_COLOR="rgba(246, 0,64, 0.5)"
+  EMAIL_ID="email"
+  CPF_ID="cpf"
+  CNPJ_ID="cnpj"
+  TELEFONE_ID="celular"
+  CPF_MESSAGE="Atenção: CPF inválido."
+  CPNJ_MESSAGE="Atenção: CNPJ inválido."
+  TELEFONE_MESSAGE="Atenção: Telefone inválido."
+  CONFIRMATION_MESSAGE="Obrigado(a), a sua inscrição foi enviada."
+  BCS_INTEGRATION="true"
+>
+  /**
+   * id: Manter sempre o valor padrão: salesforce-validations
+   * EXPIRATION_DATE_TIME: A data que será indisponibilizado o formulário de inscrição
+   * FORM_ID: ID do FORM
+   * FORM_SUBMIT_ID: Coloque aqui o ID do botão
+   * CIDADES_ID: ID do input de cidades
+   * REGIONAL_ID: ID do input de regional
+   * EXPIRATION_MESSAGE: Mensagem que será exibida quando o prazo da LP expirar
+   * EXPIRATION_FONT_COLOR: Cor da fonte da mensagem de expiração
+   * EXPIRATION_FONT_SIZE: Tamanho da fonte da mensagem de expiração
+   * EXPIRATION_BACKGROUND_COLOR: Cor de fundo da mensagem de expiração
+   * EMAIL_ID: ID do input de email
+   * CPF_ID: ID do input de CPF
+   * CNPJ_ID: ID do input de CNPJ
+   * TELEFONE_ID: ID do input de telefone
+   * CPF_MESSAGE: Mensagem de erro de CPF
+   * CPNJ_MESSAGE: Mensagem de erro de CNPJ
+   * TELEFONE_MESSAGE: Mensagem de erro no telefone
+   * CONFIRMATION_MESSAGE: Mensagem de confirmação
+   * BCS_INTEGRATION: Se true envia os dados para BCS
+   *
+   * OBS: Caso algum campo não seja necessário remover a referência do script e o HTML
+   */
+</script>
