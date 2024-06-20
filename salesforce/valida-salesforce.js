@@ -896,16 +896,14 @@ window.addEventListener('DOMContentLoaded', function () {
     const selectCities = document.getElementById(
       salesforce.getAttribute('CIDADES_ID')
     )
-    selectCities.innerHTML += `<option value="">-- Selecione uma cidade --</option>`
 
-    for (const key in regionais) {
-      if (Object.hasOwnProperty.call(regionais, key)) {
-        const cidades = regionais[key]
-        cidades.forEach((cidade) => {
-          selectCities.innerHTML += `<option value="${cidade}">${cidade}</option>`
-        })
-      }
-    }
+    // Agrupar cidades
+    const cities = Object.values(regionais).flat()
+    
+    selectCities.innerHTML += `<option value="">-- Selecione uma cidade --</option>`
+    cities.sort().forEach((cidade) => {
+        selectCities.innerHTML += `<option value="${cidade}">${cidade}</option>`
+    })
 
     if (salesforce.getAttribute('REGIONAL_ID')) {
       // De-para cidades-regionais
